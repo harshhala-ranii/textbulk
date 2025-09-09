@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  whatsapp-bulk:
+    build: .
+    container_name: whatsapp-bulk
+    volumes:
+      - ./wwebjs_auth:/app/.wwebjs_auth  # persist auth
+      - ./data:/app/data                 # keep CSV/templates if needed
+    stdin_open: true
+    tty: true

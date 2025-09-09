@@ -1,76 +1,81 @@
 // templates.js
 
-const messages = [
-  // Short + casual (no link)
-  "Hey {candidateFirstName}, just a quick nudge 🙂 {recruiterName} from {company} emailed you at {candidateEmail} via Weekday about a role. Could you take a look?\n\nSubject: {emailSubject}",
+const templates = [
+  // Template 1: short + casual (3 parts, with link)
+  [
+    "Hey {candidateFirstName} 🙂",
+    "{recruiterName} from {company} emailed you at {candidateEmail} via Weekday.",
+    "Subject: {emailSubject}\nCheck it here: {conversationLink1}"
+  ],
 
-  // Polite + formal
-  "Hello {candidateFirstName},\n\n{recruiterName} from {company} recently sent you an email at {candidateEmail} regarding an opportunity. Please review it when you get a chance.\n\nEmail Subject: {emailSubject}\n\nYou may access it here: {conversationLink2}",
+  // Template 2: polite + formal (2 parts, with link)
+  [
+    "Hello {candidateFirstName},",
+    "{recruiterName} from {company} sent you an email at {candidateEmail}.\nSubject: {emailSubject}\nYou can view it here: {conversationLink2}"
+  ],
 
-  // Slightly urgent (no link)
-  "Hi {candidateFirstName},\n\nThis is {recruiterName} from {company}. I’d appreciate if you could check the email I sent to {candidateEmail} through Weekday about a job opportunity.\n\nSubject: {emailSubject}",
+  // Template 3: slightly urgent (3 parts, no link)
+  [
+    "Hi {candidateFirstName},",
+    "This is {recruiterName} from {company}.",
+    "Could you please check the email I sent to {candidateEmail} via Weekday?\nSubject: {emailSubject}"
+  ],
 
-  // Conversational
-  "Hey {candidateFirstName},\n\n{recruiterName} here from {company}. I dropped you an email via Weekday at {candidateEmail}. Could you confirm if you’ve seen it?\n\nEmail Subject: {emailSubject}\n\nCheck here: {conversationLink4}",
+  // Template 4: conversational (2 parts, with link)
+  [
+    "Hey {candidateFirstName}, {recruiterName} here from {company}.",
+    "I dropped you an email at {candidateEmail}. Subject: {emailSubject}\nSee thread: {conversationLink3}"
+  ],
 
-  // Simple & direct
-  "Hi {candidateFirstName},\n\n{recruiterName} from {company} shared an opportunity with you over email ({candidateEmail}). Kindly review and respond.\n\nSubject: {emailSubject}\n\nLink: {conversationLink5}",
+  // Template 5: simple + direct (3 parts, no link)
+  [
+    "Hi {candidateFirstName},",
+    "{recruiterName} from {company} shared a role with you over email ({candidateEmail}).",
+    "Subject: {emailSubject}"
+  ],
 
-  // Casual reminder (no link)
-  "Hey {candidateFirstName}, hope you’re doing well! {recruiterName} from {company} emailed you at {candidateEmail} via Weekday. Could you please check it out?\n\nEmail Subject: {emailSubject}",
+  // Template 6: casual reminder (2 parts, with link)
+  [
+    "Hey {candidateFirstName}, hope you’re doing well 👋",
+    "{recruiterName} from {company} emailed you at {candidateEmail}. Subject: {emailSubject}\nCheck here: {conversationLink4}"
+  ],
 
-  // Short professional
-  "Hello {candidateFirstName},\n\nYou should have received an email from {recruiterName} ({company}) at {candidateEmail}. Please review when possible.\n\nSubject: {emailSubject}\n\nView: {conversationLink2}",
+  // Template 7: short professional (3 parts, no link)
+  [
+    "Hello {candidateFirstName},",
+    "You should have received an email from {recruiterName} ({company}) at {candidateEmail}.",
+    "Subject: {emailSubject}"
+  ],
 
-  // Friendly (no link)
-  "Hi {candidateFirstName},\n\nThis is {recruiterName} from {company}. I used Weekday to reach you on {candidateEmail}. Would be great if you could check and reply.\n\nEmail Subject: {emailSubject}",
+  // Template 8: friendly (2 parts, with link)
+  [
+    "Hi {candidateFirstName}, this is {recruiterName} from {company}.",
+    "I reached out to you via Weekday at {candidateEmail}.\nSubject: {emailSubject}\nConversation: {conversationLink5}"
+  ],
 
-  // Neutral tone
-  "Hey {candidateFirstName},\n\nA quick reminder — {recruiterName} from {company} sent you an email on {candidateEmail} regarding a role.\n\nSubject: {emailSubject}\n\nCheck here: {conversationLink4}",
+  // Template 9: neutral tone (3 parts, no link)
+  [
+    "Hey {candidateFirstName}, just a reminder —",
+    "{recruiterName} from {company} sent you an email on {candidateEmail}.",
+    "Subject: {emailSubject}"
+  ],
 
-  // Polished
-  "Hi {candidateFirstName},\n\n{recruiterName} from {company} contacted you at {candidateEmail} through Weekday regarding a position. Please review it when convenient.\n\nEmail Subject: {emailSubject}\n\nConversation: {conversationLink5}",
-
-  // Short casual (no link)
-  "Hey {candidateFirstName}, did you get the email from {recruiterName} ({company})? It was sent to {candidateEmail}.\n\nSubject: {emailSubject}",
-
-  // Formal follow-up
-  "Hello {candidateFirstName},\n\nFollowing up on the email {recruiterName} from {company} sent to {candidateEmail} via Weekday regarding a role.\n\nSubject: {emailSubject}\n\nHere’s the link: {conversationLink2}",
-
-  // Conversational + emoji
-  "Hey {candidateFirstName} 👋,\n\n{recruiterName} from {company} reached out over email ({candidateEmail}). Could you take a quick look?\n\nEmail Subject: {emailSubject}\n\nHere’s the mail: {conversationLink3}",
-
-  // Formal polite (no link)
-  "Hi {candidateFirstName},\n\nI hope this finds you well. {recruiterName} from {company} sent you an email on {candidateEmail}. Kindly review.\n\nSubject: {emailSubject}",
-
-  // Crisp
-  "Hey {candidateFirstName},\n\nYou got a mail from {recruiterName} ({company}) at {candidateEmail}.\n\nSubject: {emailSubject}\n\nView here: {conversationLink5}",
-
-  // Slightly persuasive
-  "Hi {candidateFirstName},\n\nThis is {recruiterName} from {company}. I believe you’ll find the opportunity I emailed to {candidateEmail} via Weekday interesting. Please check it out.\n\nEmail Subject: {emailSubject}\n\nThread: {conversationLink1}",
-
-  // Friendly nudge (no link)
-  "Hey {candidateFirstName},\n\nJust wanted to remind you that {recruiterName} from {company} reached out to you at {candidateEmail}. Do have a look when you can.\n\nSubject: {emailSubject}",
-
-  // Polished & respectful
-  "Hello {candidateFirstName},\n\nYou were recently contacted by {recruiterName} from {company} via email ({candidateEmail}) about an opportunity. Please review it.\n\nEmail Subject: {emailSubject}\n\nAccess here: {conversationLink3}",
-
-  // Super short (no link)
-  "Hi {candidateFirstName}, {recruiterName} ({company}) emailed you at {candidateEmail}. Please check.\n\nSubject: {emailSubject}",
-
-  // Conversational + polite
-  "Hey {candidateFirstName},\n\n{recruiterName} from {company} sent you a job opportunity via Weekday at {candidateEmail}. Could you take a moment to review it?\n\nEmail Subject: {emailSubject}\n\nHere’s the link: {conversationLink5}"
+  // Template 10: polished & respectful (2 parts, with link)
+  [
+    "Hello {candidateFirstName}, I hope this finds you well.",
+    "{recruiterName} from {company} contacted you at {candidateEmail} regarding an opportunity.\nEmail Subject: {emailSubject}\nView here: {conversationLink2}"
+  ]
 ];
 
 let templateIndex = 0;
 
 /**
- * Returns the next template in rotation
+ * Returns the next template in rotation as an array of messages
  */
 function getNextMessage() {
-  const message = messages[templateIndex];
-  templateIndex = (templateIndex + 1) % messages.length; // loop back after last
-  return message;
+  const msgs = templates[templateIndex];
+  templateIndex = (templateIndex + 1) % templates.length;
+  return msgs;
 }
 
-module.exports = { getNextMessage, messages };
+module.exports = { getNextMessage, templates };

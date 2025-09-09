@@ -4,7 +4,7 @@ const csv = require('csv-parser');
 async function loadContacts() {
   return new Promise((resolve, reject) => {
     const results = [];
-    fs.createReadStream('Airtabl-WA maunual - Sheet1.csv')
+    fs.createReadStream('data/Airtabl-WA maunual - Sheet1.csv')
       .pipe(csv())
       .on('data', (row) => {
         results.push({
