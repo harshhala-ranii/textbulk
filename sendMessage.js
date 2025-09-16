@@ -1,17 +1,14 @@
 async function sendMessageWithTyping(client, number, message) {
   const chatId = number.includes('@c.us') ? number : `${number}@c.us`;
 
-  // try to fetch chat (may fail for some libs or if jid format is off)
   let chat = null;
   try {
     chat = await client.getChatById(chatId);
     console.log('✅ getChatById succeeded for', chatId);
   } catch (err) {
-    console.warn('⚠️ getChatById failed (falling back). Error:', err && err.message);
-    chat = null;
+    console.warn('⚠️ getChatById failed (falling back). Error:', err?.message);
   }
 
-  // helper: attempt to start typing using whatever API exists
   async function startTyping() {
     try {
       if (chat && typeof chat.sendStateTyping === 'function') {
@@ -25,7 +22,6 @@ async function sendMessageWithTyping(client, number, message) {
         return 'client.sendTyping';
       }
       if (typeof client.sendPresenceUpdate === 'function') {
-        // Baileys-style API: 'composing' shows typing
         await client.sendPresenceUpdate('composing', chatId);
         console.log('→ used client.sendPresenceUpdate("composing")');
         return 'client.sendPresenceUpdate(composing)';
@@ -38,12 +34,11 @@ async function sendMessageWithTyping(client, number, message) {
       console.warn('No known typing method found on client/chat.');
       return null;
     } catch (err) {
-      console.error('startTyping error:', err && err.message);
+      console.error('startTyping error:', err?.message);
       return null;
     }
   }
 
-  // helper: attempt to stop typing in whichever way corresponds
   async function stopTyping(method) {
     try {
       if (method === 'chat.sendStateTyping' && chat && typeof chat.clearState === 'function') {
@@ -61,23 +56,20 @@ async function sendMessageWithTyping(client, number, message) {
         console.log('→ cleared via client.stopTyping()');
         return;
       }
-      // no-op fallback
       console.log('No typing-clear method available; continuing to send the message');
     } catch (err) {
-      console.error('stopTyping error:', err && err.message);
+      console.error('stopTyping error:', err?.message);
     }
   }
 
-  // start typing (or attempt to)
+  // try typing
   const usedMethod = await startTyping();
+  if (usedMethod) {
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    await stopTyping(usedMethod);
+  }
 
-  // fixed 10 seconds typing as you requested
-  await new Promise(resolve => setTimeout(resolve, 10000));
-
-  // stop typing
-  await stopTyping(usedMethod);
-
-  // send the message (prefer chat.sendMessage if available)
+  // send message
   try {
     if (chat && typeof chat.sendMessage === 'function') {
       await chat.sendMessage(message);
@@ -86,8 +78,9 @@ async function sendMessageWithTyping(client, number, message) {
     }
     console.log(`📩 Sent to ${number}: ${message}`);
   } catch (err) {
-    console.error('sendMessage failed:', err && err.message);
-    throw err;
+    console.error(`❌ Failed to send to ${number}:`, err?.message);
+    // don't throw, just exit so bulk loop continues
+    return;
   }
 }
 

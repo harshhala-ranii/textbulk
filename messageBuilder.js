@@ -1,8 +1,9 @@
+
 function buildMessage(templateParts, contact) {
   if (Array.isArray(templateParts)) {
     return templateParts.map(part =>
       part
-        .replace('{candidateFirstName}', contact.candidateFirstNameFormatted)
+        .replace('{candidateFirstName}', contact.candidateFirstName)
         .replace('{recruiterName}', contact.recruiterName)
         .replace('{company}', contact.company)
         .replace('{candidateEmail}', contact.candidateEmail)
@@ -16,7 +17,7 @@ function buildMessage(templateParts, contact) {
   } else {
     return [
       templateParts
-        .replace('{candidateFirstName}', contact.candidateFirstNameFormatted)
+        .replace('{candidateFirstName}', contact.candidateFirstName)
         .replace('{recruiterName}', contact.recruiterName)
         .replace('{company}', contact.company)
         .replace('{candidateEmail}', contact.candidateEmail)

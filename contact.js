@@ -8,7 +8,7 @@ async function loadContacts() {
       .pipe(csv())
       .on('data', (row) => {
         results.push({
-          candidateFirstName: row['candidateFirstNameFormatted'],
+          candidateFirstName: row['candidateFirstName'],
           candidateEmail: row['Candidate email'],
           phone: row['Candidate phone number'],
           company: row['Sender Company'],
